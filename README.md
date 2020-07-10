@@ -11,7 +11,7 @@
 
 Color palette generator, capable to generate N colors using a set of basic colors.
 
-Supports HEX colors and RGBA colors.
+Supports HEX and RGBA colors.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 name: color_palette_generator
 description: Color palette generator, capable to generate N colors using a set of basic colors. Supports HEX and RGBA colors.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Colossus-Services/color_palette_generator
 
 environment:

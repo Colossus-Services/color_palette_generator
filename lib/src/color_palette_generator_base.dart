@@ -2094,8 +2094,9 @@ class HTMLColor implements Comparable<HTMLColor> {
   }
 
   void _checkInRange(String name, num value, num min, num max) {
-    if (!_isInRange(value, min, max))
+    if (!_isInRange(value, min, max)) {
       throw ArgumentError("'$name' not in range $min .. $max: $value");
+    }
   }
 
   bool _isInRange(num value, num min, num max) {

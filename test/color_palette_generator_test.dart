@@ -1,5 +1,4 @@
 import 'package:color_palette_generator/color_palette_generator.dart';
-import 'package:swiss_knife/swiss_knife.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -7,95 +6,111 @@ void main() {
     setUp(() {});
 
     test('Basic Test', () {
-      
-      var basicPalette = ColorPalette.from(['#ff0000','#00ff00','#0000ff']) ;
+      var basicPalette = ColorPalette.from(['#ff0000', '#00ff00', '#0000ff']);
 
-      var colorGenerator = ColorGeneratorFromBasicPalette(basicPalette) ;
+      var colorGenerator = ColorGeneratorFromBasicPalette(basicPalette);
 
-      expect( colorGenerator.generatePaletteAsString(1) , equals(['#ff0000']) );
+      expect(colorGenerator.generatePaletteAsString(1), equals(['#ff0000']));
 
-      expect( colorGenerator.generatePaletteAsString(3) , equals(['#ff0000','#00ff00','#0000ff']) );
+      expect(colorGenerator.generatePaletteAsString(3),
+          equals(['#ff0000', '#00ff00', '#0000ff']));
 
-      expect( colorGenerator.generatePaletteAsString(6) , equals(['#ff6161', '#ff0000', '#00ff00', '#0000ff', '#a80000', '#00a800']) );
+      expect(
+          colorGenerator.generatePaletteAsString(6),
+          equals([
+            '#ff6161',
+            '#ff0000',
+            '#00ff00',
+            '#0000ff',
+            '#a80000',
+            '#00a800'
+          ]));
 
-      expect( colorGenerator.generatePaletteAsString(9) , equals([
-        '#ff6161',
-        '#61ff61',
-        '#6161ff',
-        '#ff0000',
-        '#00ff00',
-        '#0000ff',
-        '#a80000',
-        '#00a800',
-        '#0000a8'
-      ]) );
-
+      expect(
+          colorGenerator.generatePaletteAsString(9),
+          equals([
+            '#ff6161',
+            '#61ff61',
+            '#6161ff',
+            '#ff0000',
+            '#00ff00',
+            '#0000ff',
+            '#a80000',
+            '#00a800',
+            '#0000a8'
+          ]));
     });
 
     test('Color With Alpha Test', () {
+      var basicPalette =
+          ColorPalette.from(['#ff0000', 'rgba(0,255,0, 0.50)', '#0000ff']);
 
-      var basicPalette = ColorPalette.from(['#ff0000','rgba(0,255,0, 0.50)','#0000ff']) ;
+      var colorGenerator = ColorGeneratorFromBasicPalette(basicPalette);
 
-      var colorGenerator = ColorGeneratorFromBasicPalette(basicPalette) ;
+      expect(colorGenerator.generatePaletteAsString(1), equals(['#ff0000']));
 
-      expect( colorGenerator.generatePaletteAsString(1) , equals(['#ff0000']) );
+      expect(colorGenerator.generatePaletteAsString(3),
+          equals(['#ff0000', 'rgba(0, 255, 0, 0.5)', '#0000ff']));
 
-      expect( colorGenerator.generatePaletteAsString(3) , equals(['#ff0000', 'rgba(0, 255, 0, 0.5)', '#0000ff']) );
-
-      expect( colorGenerator.generatePaletteAsString(6) , equals(['#ff6161',
-        '#ff0000',
-        'rgba(0, 255, 0, 0.5)',
-        '#0000ff',
-        '#a80000',
-        'rgba(0, 168, 0, 0.5)']) );
-
+      expect(
+          colorGenerator.generatePaletteAsString(6),
+          equals([
+            '#ff6161',
+            '#ff0000',
+            'rgba(0, 255, 0, 0.5)',
+            '#0000ff',
+            '#a80000',
+            'rgba(0, 168, 0, 0.5)'
+          ]));
     });
 
     test('Invalid Palette Test', () {
+      expect(
+          () => ColorPalette.from([]), throwsA(TypeMatcher<ArgumentError>()));
 
-      expect(() => ColorPalette.from([]) , throwsA(TypeMatcher<ArgumentError>()));
-
-      expect(() => ColorPalette.from(['#ff0000','#00ff00','#ff0000']) , throwsA(TypeMatcher<ArgumentError>()));
-
+      expect(() => ColorPalette.from(['#ff0000', '#00ff00', '#ff0000']),
+          throwsA(TypeMatcher<ArgumentError>()));
     });
 
     test('HTMLColor Test', () {
+      expect(HTMLColor.from('000').toString(), equals('#000000'));
+      expect(HTMLColor.from('000000').toString(), equals('#000000'));
 
-      expect( HTMLColor.from('000').toString() , equals('#000000'));
-      expect( HTMLColor.from('000000').toString() , equals('#000000'));
+      expect(HTMLColor.from('fff').toString(), equals('#ffffff'));
+      expect(HTMLColor.from('ffffff').toString(), equals('#ffffff'));
 
-      expect( HTMLColor.from('fff').toString() , equals('#ffffff'));
-      expect( HTMLColor.from('ffffff').toString() , equals('#ffffff'));
+      expect(HTMLColor.from('rgb(0,0,0)').toString(), equals('#000000'));
+      expect(HTMLColor.from('(0,0,0)').toString(), equals('#000000'));
 
-      expect( HTMLColor.from('rgb(0,0,0)').toString() , equals('#000000'));
-      expect( HTMLColor.from('(0,0,0)').toString() , equals('#000000'));
+      expect(HTMLColor.from('rgb(0,255,0)').toString(), equals('#00ff00'));
 
-      expect( HTMLColor.from('rgb(0,255,0)').toString() , equals('#00ff00'));
+      expect(HTMLColor.from('(0,255,0)').toString(), equals('#00ff00'));
 
-      expect( HTMLColor.from('(0,255,0)').toString() , equals('#00ff00'));
+      expect(HTMLColor.from('rgba(200,0,255,1)').toString(), equals('#c800ff'));
+      expect(HTMLColor.from('(0,0,255,1)').toString(), equals('#0000ff'));
+      expect(HTMLColor.from('(0,0,255,0)').toString(),
+          equals('rgba(0, 0, 255, 0.0)'));
 
-      expect( HTMLColor.from('rgba(200,0,255,1)').toString() , equals('#c800ff'));
-      expect( HTMLColor.from('(0,0,255,1)').toString() , equals('#0000ff'));
-      expect( HTMLColor.from('(0,0,255,0)').toString() , equals('rgba(0, 0, 255, 0.0)'));
-
-      expect( HTMLColor.from('(0,0,0, 0.5)').toString() , equals('rgba(0, 0, 0, 0.5)'));
-      expect( HTMLColor.from('(10,128,200, 0.5)').toString() , equals('rgba(10, 128, 200, 0.5)'));
-
+      expect(HTMLColor.from('(0,0,0, 0.5)').toString(),
+          equals('rgba(0, 0, 0, 0.5)'));
+      expect(HTMLColor.from('(10,128,200, 0.5)').toString(),
+          equals('rgba(10, 128, 200, 0.5)'));
     });
-    
+
     test('Invalid HTMLColor Test', () {
+      expect(HTMLColor.from(''), isNull);
+      expect(HTMLColor.from('!!!'), isNull);
+      expect(HTMLColor.from('rgb(0,0,0, -10)'), isNull);
 
-      expect( HTMLColor.from('') , isNull);
-      expect( HTMLColor.from('!!!') , isNull);
-      expect( HTMLColor.from('rgb(0,0,0, -10)') , isNull);
+      expect(() => HTMLColor.from('(255,255,255,255)'),
+          throwsA(TypeMatcher<ArgumentError>()));
+      expect(() => HTMLColor.from('(0,255,0,10)'),
+          throwsA(TypeMatcher<ArgumentError>()));
 
-      expect(() => HTMLColor.from('(255,255,255,255)') , throwsA(TypeMatcher<ArgumentError>()));
-      expect(() => HTMLColor.from('(0,255,0,10)') , throwsA(TypeMatcher<ArgumentError>()));
-
-      expect(() => HTMLColor.from('rgba(255,255,255,255)') , throwsA(TypeMatcher<ArgumentError>()));
-      expect(() => HTMLColor.from('rgba(0,255,0,10)') , throwsA(TypeMatcher<ArgumentError>()));
-
+      expect(() => HTMLColor.from('rgba(255,255,255,255)'),
+          throwsA(TypeMatcher<ArgumentError>()));
+      expect(() => HTMLColor.from('rgba(0,255,0,10)'),
+          throwsA(TypeMatcher<ArgumentError>()));
     });
-
   });
 }

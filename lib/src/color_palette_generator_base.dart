@@ -70,11 +70,11 @@ class SchemeColorGenerator extends ColorGenerator {
 
   String get defaultDisabledSchemeName => _schemes.entries
       .firstWhere((e) {
-    var name = e.key.toLowerCase();
-    return name.contains('disabled') ||
-        name.contains('grey') ||
-        name.contains('gray');
-  })
+        var name = e.key.toLowerCase();
+        return name.contains('disabled') ||
+            name.contains('grey') ||
+            name.contains('gray');
+      })
       .key
       .replaceFirst(RegExp(r'\d+$'), '');
 
@@ -2067,10 +2067,10 @@ class HTMLColor implements Comparable<HTMLColor> {
       r'^(?:rgba?)?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*(\d+(?:\.\d+)?)?\s*\)');
 
   static final RegExp COLOR_PATTERN_HEX3 =
-  RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f])$');
+      RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f])$');
 
   static final RegExp COLOR_PATTERN_HEX6 =
-  RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])$');
+      RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])$');
 
   /// Red channel: 0..255
   final int red;
@@ -2085,23 +2085,24 @@ class HTMLColor implements Comparable<HTMLColor> {
   final double alpha;
 
   HTMLColor(this.red, this.green, this.blue, [this.alpha]) {
-    _checkInRange('red', red, 0, 255) ;
-    _checkInRange('green', green, 0, 255) ;
-    _checkInRange('blue', blue, 0, 255) ;
+    _checkInRange('red', red, 0, 255);
+    _checkInRange('green', green, 0, 255);
+    _checkInRange('blue', blue, 0, 255);
     if (alpha != null) {
-      _checkInRange('alpha', alpha, 0, 1) ;
+      _checkInRange('alpha', alpha, 0, 1);
     }
   }
 
   void _checkInRange(String name, num value, num min, num max) {
-    if ( !_isInRange(value, min, max) ) throw ArgumentError("'$name' not in range $min .. $max: $value");
+    if (!_isInRange(value, min, max))
+      throw ArgumentError("'$name' not in range $min .. $max: $value");
   }
 
   bool _isInRange(num value, num min, num max) {
-    if (value == null) return false ;
-    if (value < min) return false ;
-    if (value > max) return false ;
-    return true ;
+    if (value == null) return false;
+    if (value < min) return false;
+    if (value > max) return false;
+    return true;
   }
 
   /// Parses from a HTMLColor instance or a string:
@@ -2154,7 +2155,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   }
 
   /// Returns [true] if this color has [alpha] channel lower than 1.
-  bool get hasAlpha => alpha != null && alpha != 1 ;
+  bool get hasAlpha => alpha != null && alpha != 1;
 
   /// Converts to a HTML Color string. If alpha is present uses `rgba()` format.
   @override
@@ -2180,12 +2181,12 @@ class HTMLColor implements Comparable<HTMLColor> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is HTMLColor &&
-              runtimeType == other.runtimeType &&
-              red == other.red &&
-              green == other.green &&
-              blue == other.blue &&
-              alpha == other.alpha;
+      other is HTMLColor &&
+          runtimeType == other.runtimeType &&
+          red == other.red &&
+          green == other.green &&
+          blue == other.blue &&
+          alpha == other.alpha;
 
   @override
   int get hashCode =>
@@ -2262,10 +2263,10 @@ class ColorPalette {
   final List<HTMLColor> _basicColors;
 
   /// Returns the basic colors of this palette.
-  List<HTMLColor> get basicColors => List.from(_basicColors) ;
+  List<HTMLColor> get basicColors => List.from(_basicColors);
 
   ColorPalette(this._basicColors) {
-    _check() ;
+    _check();
   }
 
   void _check() {
@@ -2325,7 +2326,7 @@ class ColorPalette {
 
         var c1 = changeDarkAmount > 10 ? init.darker(changeDarkAmount) : null;
         var c2 =
-        changeBrightAmount > 10 ? end.brighter(changeBrightAmount) : null;
+            changeBrightAmount > 10 ? end.brighter(changeBrightAmount) : null;
 
         if (c1 != null) {
           blockColors.insert(0, c1);
@@ -2344,7 +2345,7 @@ class ColorPalette {
 
     var blocksColors = blocks
         .map((key, value) =>
-        MapEntry(key, value..insert(value.length ~/ 2, key)))
+            MapEntry(key, value..insert(value.length ~/ 2, key)))
         .values;
 
     var palette = blocksColors.expand((e) => e).toList();
@@ -2370,7 +2371,7 @@ class ColorPalette {
     var html = '<div style="$styleDisplay">';
     for (var color in _basicColors) {
       html +=
-      '<div style="display: inline-block ; background-color: ${color.toString()} ; margin: ${colorMargin}px ; width: ${colorWidth}px ; height: ${colorHeight}px"></div>';
+          '<div style="display: inline-block ; background-color: ${color.toString()} ; margin: ${colorMargin}px ; width: ${colorWidth}px ; height: ${colorHeight}px"></div>';
     }
     html += '</div>';
 
@@ -2379,7 +2380,7 @@ class ColorPalette {
 
   @override
   String toString([bool forceRGBA = false]) {
-    return '[${ _basicColors.map((e) => e.toString(forceRGBA)).join(', ') }]' ;
+    return '[${_basicColors.map((e) => e.toString(forceRGBA)).join(', ')}]';
   }
 }
 
@@ -2423,12 +2424,12 @@ class ColorGeneratorFromBasicPalette extends ColorGenerator {
   }
 
   List<String> generatePaletteAsString(int size) {
-    return generatePalette(size).map((e) => e.toString()).toList() ;
+    return generatePalette(size).map((e) => e.toString()).toList();
   }
 
   ColorPalette generatePaletteAsColorPalette(int size) {
-    var colors = generatePalette(size) ;
-    return ColorPalette(colors) ;
+    var colors = generatePalette(size);
+    return ColorPalette(colors);
   }
 
   /// Generates a specific color for [index] of palette fo size [total].

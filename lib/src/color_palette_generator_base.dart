@@ -1811,6 +1811,54 @@ class StandardColorGenerator extends SchemeColorGenerator {
       '#b15928'
     ],
 
+    'brewer.Single3': ['#1f78b4', '#33a02c', '#e31a1c'],
+    'brewer.Single4': ['#1f78b4', '#33a02c', '#e31a1c', '#ff7f00'],
+    'brewer.Single5': ['#1f78b4', '#33a02c', '#e31a1c', '#ff7f00', '#6a3d9a'],
+    'brewer.Single6': [
+      '#1f78b4',
+      '#33a02c',
+      '#e31a1c',
+      '#ff7f00',
+      '#6a3d9a',
+      '#b15928'
+    ],
+
+    'brewer.SingleLight3': ['#a6cee3', '#b2df8a', '#fb9a99'],
+    'brewer.SingleLight4': ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f'],
+    'brewer.SingleLight5': [
+      '#a6cee3',
+      '#b2df8a',
+      '#fb9a99',
+      '#fdbf6f',
+      '#cab2d6'
+    ],
+    'brewer.SingleLight6': [
+      '#a6cee3',
+      '#b2df8a',
+      '#fb9a99',
+      '#fdbf6f',
+      '#cab2d6',
+      '#ffff99'
+    ],
+
+    'brewer.Financial3': ['#1f78b4', '#2e1fb4', '#761fb4'],
+    'brewer.Financial4': ['#1f78b4', '#2e1fb4', '#761fb4', '#1fa8b4'],
+    'brewer.Financial5': [
+      '#1f78b4',
+      '#2e1fb4',
+      '#761fb4',
+      '#1fa8b4',
+      '#b4a31f'
+    ],
+    'brewer.Financial6': [
+      '#1f78b4',
+      '#2e1fb4',
+      '#761fb4',
+      '#1fa8b4',
+      '#b4a31f',
+      '#b4801f'
+    ],
+
     'brewer.PastelOne3': ['#fbb4ae', '#b3cde3', '#ccebc5'],
     'brewer.PastelOne4': ['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4'],
     'brewer.PastelOne5': [
@@ -2053,6 +2101,9 @@ class StandardColorGenerator extends SchemeColorGenerator {
 
   /// Constructs using default scheme 'brewer.Paired'.
   StandardColorGenerator() : super(_standard_schemes, 'brewer.Paired');
+
+  StandardColorGenerator.scheme(String schemeName)
+      : super(_standard_schemes, schemeName);
 }
 
 /// Represents a Color in [red], [green], [blue] and [alpha] format.
@@ -2194,13 +2245,18 @@ class HTMLColor implements Comparable<HTMLColor> {
       red.hashCode ^ green.hashCode ^ blue.hashCode ^ alpha.hashCode;
 
   /// Returns a brighter color using [amount] (from 0 to 255) to increase bright.
-  HTMLColor brighter(int amount) {
+  ///
+  /// [def] The default color to return if it's not possible to generate a brighter color.
+  HTMLColor brighter([int amount, HTMLColor def]) {
     var space = getBrighterSpace();
+    if (def != null && space <= 2) return def;
+
+    amount ??= _colorChangeAmount(space);
 
     var minAmount = Math.min(amount ~/ 2, 10);
 
     if (space < amount) {
-      if (space < minAmount) return null;
+      if (space < minAmount) return def;
       amount = space;
     }
 
@@ -2209,18 +2265,35 @@ class HTMLColor implements Comparable<HTMLColor> {
   }
 
   /// Returns a darker color using [amount] (from 0 to 255) to decrease bright.
-  HTMLColor darker(int amount) {
+  ///
+  /// [def] The default color to return if it's not possible to generate a darker color.
+  HTMLColor darker([int amount, HTMLColor def]) {
     var space = getDarkerSpace();
+    if (def != null && space <= 2) return def;
+
+    amount ??= _colorChangeAmount(space);
 
     var minAmount = Math.min(amount ~/ 2, 10);
 
     if (space < amount) {
-      if (space < minAmount) return null;
+      if (space < minAmount) return def;
       amount = space;
     }
 
     return HTMLColor(_clip(red - amount), _clip(green - amount),
         _clip(blue - amount), alpha);
+  }
+
+  int _colorChangeAmount(int space) {
+    if (space > 16) {
+      return (8 + ((space - 8) ~/ 4));
+    } else if (space > 8) {
+      return (4 + ((space - 4) ~/ 2));
+    } else if (space > 4) {
+      return space ~/ 2;
+    } else {
+      return space;
+    }
   }
 
   /// Returns the amount of space for a brighter color.

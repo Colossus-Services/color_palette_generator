@@ -1,3 +1,12 @@
+## 1.0.3
+
+- `HTMLColor`: brighter/darker methods:
+  - Accepts not arguments.
+  - New optional parameter `def`.
+- New constructor `StandardColorGenerator.scheme`.
+- Added schemes: `brewer.Single` and `brewer.Financial`.
+- swiss_knife: ^2.5.15
+
 ## 1.0.2
 
 - swiss_knife: ^2.5.12

@@ -2114,6 +2114,9 @@ class HTMLColor implements Comparable<HTMLColor> {
     return list.map((e) => HTMLColor.from(e)).toList();
   }
 
+  static final RegExp COLOR_PATTERN_ARGS =
+      RegExp(r'^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*(\d+(?:\.\d+)?)?\s*');
+
   static final RegExp COLOR_PATTERN_RGBA = RegExp(
       r'^(?:rgba?)?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*(\d+(?:\.\d+)?)?\s*\)');
 
@@ -2201,6 +2204,16 @@ class HTMLColor implements Comparable<HTMLColor> {
       var b = int.tryParse(hex.substring(4, 6), radix: 16);
 
       return HTMLColor(r, g, b);
+    }
+
+    var matchARGS = COLOR_PATTERN_ARGS.firstMatch(color);
+
+    if (matchARGS != null) {
+      var r = int.parse(matchARGS[1]);
+      var g = int.parse(matchARGS[2]);
+      var b = int.parse(matchARGS[3]);
+      var a = matchARGS[4] != null ? double.parse(matchARGS[4]) : null;
+      return HTMLColor(r, g, b, a);
     }
 
     return null;

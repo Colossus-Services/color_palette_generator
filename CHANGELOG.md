@@ -1,3 +1,7 @@
+## 1.0.4
+
+- `HTMLColor.from`: accepts color pattern: `0, 128, 255, 0.5`
+
 ## 1.0.3
 
 - `HTMLColor`: brighter/darker methods:

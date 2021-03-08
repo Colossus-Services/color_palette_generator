@@ -47,21 +47,14 @@ class SchemeColorGenerator extends ColorGenerator {
   /// The Map of schemes, with scheme name as Key and A List of HTML colors as values.
   final Map<String, List<String>> _schemes;
 
-  String _mainScheme;
+  /// The current main scheme name.
+  String mainScheme;
 
-  SchemeColorGenerator(Map<String, List<String>> schemes, String mainScheme)
-      : _schemes = Map.from(schemes).cast(),
-        _mainScheme = mainScheme ?? schemes.keys.first;
+  SchemeColorGenerator(Map<String, List<String>> schemes, this.mainScheme)
+      : _schemes = Map.from(schemes).cast();
 
   /// Returns a List of scheme names/keys.
-  List<String> get schemeNames => _schemes.keys;
-
-  /// The current main scheme name.
-  String get mainScheme => _mainScheme;
-
-  set mainScheme(String value) {
-    _mainScheme = value ?? schemeNames.first;
-  }
+  List<String> get schemeNames => _schemes.keys as List<String>;
 
   String get defaultSchemeName => _schemes.entries
       .firstWhere((e) => !e.key.contains('disabled'))
@@ -114,7 +107,7 @@ class SchemeColorGenerator extends ColorGenerator {
     return colors;
   }
 
-  List<String> _getSchemeColorsImpl(
+  List<String>? _getSchemeColorsImpl(
       String schemeName, int size, bool disabled) {
     var keys = <String>[schemeName];
 
@@ -150,7 +143,7 @@ class SchemeColorGenerator extends ColorGenerator {
 
   @override
   String generateColor(String name, int index, int total) {
-    var colors = getSchemeColors(_mainScheme, total);
+    var colors = getSchemeColors(mainScheme, total);
     var idx = index % colors.length;
     var color = colors[idx];
     return color;
@@ -158,7 +151,7 @@ class SchemeColorGenerator extends ColorGenerator {
 
   @override
   String generateDisabledColor(String name, int index, int total) {
-    var colors = getDisabledSchemeColors(_mainScheme, total);
+    var colors = getDisabledSchemeColors(mainScheme, total);
     var idx = index % colors.length;
     var color = colors[idx];
     return color;
@@ -2111,7 +2104,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Parses and returns a flat list [List<HTMLColor>].
   static List<HTMLColor> toList(dynamic value) {
     var list = toFlatListOfStrings(value, delimiter: RegExp(r'[;|]+'));
-    return list.map((e) => HTMLColor.from(e)).toList();
+    return list.map((e) => HTMLColor.from(e)).whereType<HTMLColor>().toList();
   }
 
   static final RegExp COLOR_PATTERN_ARGS =
@@ -2127,34 +2120,33 @@ class HTMLColor implements Comparable<HTMLColor> {
       RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])$');
 
   /// Red channel: 0..255
-  final int/*!*/ red;
+  final int red;
 
   /// Green channel: 0..255
-  final int/*!*/ green;
+  final int green;
 
   /// Blue channel: 0..255
-  final int/*!*/ blue;
+  final int blue;
 
   /// Alpha channel: 0..1
-  final double/*?*/ alpha;
+  final double? alpha;
 
   HTMLColor(this.red, this.green, this.blue, [this.alpha]) {
     _checkInRange('red', red, 0, 255);
     _checkInRange('green', green, 0, 255);
     _checkInRange('blue', blue, 0, 255);
     if (alpha != null) {
-      _checkInRange('alpha', alpha, 0, 1);
+      _checkInRange('alpha', alpha!, 0, 1);
     }
   }
 
-  void _checkInRange(String name, num/*!*/ value, num min, num max) {
+  void _checkInRange(String name, num value, num min, num max) {
     if (!_isInRange(value, min, max)) {
       throw ArgumentError("'$name' not in range $min .. $max: $value");
     }
   }
 
-  bool _isInRange(num/*!*/ value, num min, num max) {
-    if (value == null) return false;
+  bool _isInRange(num value, num min, num max) {
     if (value < min) return false;
     if (value > max) return false;
     return true;
@@ -2163,7 +2155,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Parses from a HTMLColor instance or a string:
   ///  - #FF0000
   ///  - rgba(255,0,0, 0.5)
-  static HTMLColor/*?*/ from(String color) {
+  static HTMLColor? from(String? color) {
     if (color == null) return null;
     color = color.trim().toLowerCase();
     if (color.isEmpty) return null;
@@ -2171,25 +2163,25 @@ class HTMLColor implements Comparable<HTMLColor> {
     var matchRGBA = COLOR_PATTERN_RGBA.firstMatch(color);
 
     if (matchRGBA != null) {
-      var r = int.parse(matchRGBA[1]);
-      var g = int.parse(matchRGBA[2]);
-      var b = int.parse(matchRGBA[3]);
-      var a = matchRGBA[4] != null ? double.parse(matchRGBA[4]) : null;
+      var r = int.parse(matchRGBA[1]!);
+      var g = int.parse(matchRGBA[2]!);
+      var b = int.parse(matchRGBA[3]!);
+      var a = matchRGBA[4] != null ? double.parse(matchRGBA[4]!) : null;
       return HTMLColor(r, g, b, a);
     }
 
     var matchHex3 = COLOR_PATTERN_HEX3.firstMatch(color);
 
     if (matchHex3 != null) {
-      var hex = matchHex3.group(1);
+      var hex = matchHex3.group(1)!;
 
       var sR = hex.substring(0, 1);
       var sG = hex.substring(1, 2);
       var sB = hex.substring(2, 3);
 
-      var r = int.tryParse(sR + sR, radix: 16);
-      var g = int.tryParse(sG + sG, radix: 16);
-      var b = int.tryParse(sB + sB, radix: 16);
+      var r = int.tryParse(sR + sR, radix: 16)!;
+      var g = int.tryParse(sG + sG, radix: 16)!;
+      var b = int.tryParse(sB + sB, radix: 16)!;
 
       return HTMLColor(r, g, b);
     }
@@ -2197,11 +2189,11 @@ class HTMLColor implements Comparable<HTMLColor> {
     var matchHex6 = COLOR_PATTERN_HEX6.firstMatch(color);
 
     if (matchHex6 != null) {
-      var hex = matchHex6.group(1);
+      var hex = matchHex6.group(1)!;
 
-      var r = int.tryParse(hex.substring(0, 2), radix: 16);
-      var g = int.tryParse(hex.substring(2, 4), radix: 16);
-      var b = int.tryParse(hex.substring(4, 6), radix: 16);
+      var r = int.tryParse(hex.substring(0, 2), radix: 16)!;
+      var g = int.tryParse(hex.substring(2, 4), radix: 16)!;
+      var b = int.tryParse(hex.substring(4, 6), radix: 16)!;
 
       return HTMLColor(r, g, b);
     }
@@ -2209,10 +2201,10 @@ class HTMLColor implements Comparable<HTMLColor> {
     var matchARGS = COLOR_PATTERN_ARGS.firstMatch(color);
 
     if (matchARGS != null) {
-      var r = int.parse(matchARGS[1]);
-      var g = int.parse(matchARGS[2]);
-      var b = int.parse(matchARGS[3]);
-      var a = matchARGS[4] != null ? double.parse(matchARGS[4]) : null;
+      var r = int.parse(matchARGS[1]!);
+      var g = int.parse(matchARGS[2]!);
+      var b = int.parse(matchARGS[3]!);
+      var a = matchARGS[4] != null ? double.parse(matchARGS[4]!) : null;
       return HTMLColor(r, g, b, a);
     }
 
@@ -2225,7 +2217,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Converts to a HTML Color string. If alpha is present uses `rgba()` format.
   @override
   String toString([bool forceRGBA = false]) {
-    var rgbaMode = hasAlpha || (forceRGBA != null && forceRGBA);
+    var rgbaMode = hasAlpha || forceRGBA;
 
     if (rgbaMode) {
       var a = alpha ?? 1;
@@ -2260,7 +2252,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Returns a brighter color using [amount] (from 0 to 255) to increase bright.
   ///
   /// [def] The default color to return if it's not possible to generate a brighter color.
-  HTMLColor brighter([int amount, HTMLColor def]) {
+  HTMLColor? brighter([int? amount, HTMLColor? def]) {
     var space = getBrighterSpace();
     if (def != null && space <= 2) return def;
 
@@ -2280,7 +2272,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Returns a darker color using [amount] (from 0 to 255) to decrease bright.
   ///
   /// [def] The default color to return if it's not possible to generate a darker color.
-  HTMLColor darker([int amount, HTMLColor def]) {
+  HTMLColor? darker([int? amount, HTMLColor? def]) {
     var space = getDarkerSpace();
     if (def != null && space <= 2) return def;
 
@@ -2311,14 +2303,14 @@ class HTMLColor implements Comparable<HTMLColor> {
 
   /// Returns the amount of space for a brighter color.
   int getBrighterSpace() {
-    var min = Math.minInList([red, green, blue]);
+    var min = Math.minInList([red, green, blue])!;
     var space = 195 - min;
     return space;
   }
 
   /// Returns the amount of space for a darker color.
   int getDarkerSpace() {
-    var max = Math.maxInList([red, green, blue]);
+    var max = Math.maxInList([red, green, blue])!;
     var space = max - 80;
     return space;
   }
@@ -2347,7 +2339,7 @@ class HTMLColor implements Comparable<HTMLColor> {
 
 /// Holds a color palette ([List<HTMLColor>]).
 class ColorPalette {
-  final List<HTMLColor/*!*/> _basicColors;
+  final List<HTMLColor> _basicColors;
 
   /// Returns the basic colors of this palette.
   List<HTMLColor> get basicColors => List.from(_basicColors);
@@ -2357,7 +2349,6 @@ class ColorPalette {
   }
 
   void _check() {
-    if (_basicColors == null) throw ArgumentError.notNull('basicColors');
     if (basicColors.isEmpty) throw ArgumentError('Empty basicColors');
 
     var set = Set.from(_basicColors);
@@ -2374,7 +2365,7 @@ class ColorPalette {
   /// Same as [generatePalette], but returns HTML string colors.
   List<String> generateHTMLPalette(int size) {
     var palette = generatePalette(size);
-    if (palette == null || palette.isEmpty) return [];
+    if (palette.isEmpty) return [];
     return palette.map((e) => e.toString()).toList();
   }
 
@@ -2442,16 +2433,15 @@ class ColorPalette {
 
   /// Returns a `<div>` with a visual palette of colors [_basicColors].
   String asHTML(
-      {int colorWidth, int colorHeight, int/*!*/ colorMargin = 5, bool/*!*/ inlineBlock = false}) {
+      {int? colorWidth,
+      int? colorHeight,
+      int colorMargin = 5,
+      bool inlineBlock = false}) {
     colorWidth ??= colorHeight;
     colorHeight ??= colorWidth;
 
     colorWidth ??= 20;
     colorHeight ??= colorWidth;
-
-    colorMargin ??= 5;
-
-    inlineBlock ??= false;
 
     var styleDisplay = inlineBlock ? 'display: inline-block ;' : '';
 

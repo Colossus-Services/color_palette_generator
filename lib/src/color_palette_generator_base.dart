@@ -2127,16 +2127,16 @@ class HTMLColor implements Comparable<HTMLColor> {
       RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])$');
 
   /// Red channel: 0..255
-  final int red;
+  final int/*!*/ red;
 
   /// Green channel: 0..255
-  final int green;
+  final int/*!*/ green;
 
   /// Blue channel: 0..255
-  final int blue;
+  final int/*!*/ blue;
 
   /// Alpha channel: 0..1
-  final double alpha;
+  final double/*?*/ alpha;
 
   HTMLColor(this.red, this.green, this.blue, [this.alpha]) {
     _checkInRange('red', red, 0, 255);
@@ -2147,13 +2147,13 @@ class HTMLColor implements Comparable<HTMLColor> {
     }
   }
 
-  void _checkInRange(String name, num value, num min, num max) {
+  void _checkInRange(String name, num/*!*/ value, num min, num max) {
     if (!_isInRange(value, min, max)) {
       throw ArgumentError("'$name' not in range $min .. $max: $value");
     }
   }
 
-  bool _isInRange(num value, num min, num max) {
+  bool _isInRange(num/*!*/ value, num min, num max) {
     if (value == null) return false;
     if (value < min) return false;
     if (value > max) return false;
@@ -2163,7 +2163,7 @@ class HTMLColor implements Comparable<HTMLColor> {
   /// Parses from a HTMLColor instance or a string:
   ///  - #FF0000
   ///  - rgba(255,0,0, 0.5)
-  factory HTMLColor.from(String color) {
+  static HTMLColor/*?*/ from(String color) {
     if (color == null) return null;
     color = color.trim().toLowerCase();
     if (color.isEmpty) return null;
@@ -2347,7 +2347,7 @@ class HTMLColor implements Comparable<HTMLColor> {
 
 /// Holds a color palette ([List<HTMLColor>]).
 class ColorPalette {
-  final List<HTMLColor> _basicColors;
+  final List<HTMLColor/*!*/> _basicColors;
 
   /// Returns the basic colors of this palette.
   List<HTMLColor> get basicColors => List.from(_basicColors);
@@ -2442,7 +2442,7 @@ class ColorPalette {
 
   /// Returns a `<div>` with a visual palette of colors [_basicColors].
   String asHTML(
-      {int colorWidth, int colorHeight, int colorMargin, bool inlineBlock}) {
+      {int colorWidth, int colorHeight, int/*!*/ colorMargin = 5, bool/*!*/ inlineBlock = false}) {
     colorWidth ??= colorHeight;
     colorHeight ??= colorWidth;
 

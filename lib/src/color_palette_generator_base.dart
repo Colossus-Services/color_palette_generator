@@ -54,7 +54,7 @@ class SchemeColorGenerator extends ColorGenerator {
       : _schemes = Map.from(schemes).cast();
 
   /// Returns a List of scheme names/keys.
-  List<String> get schemeNames => _schemes.keys as List<String>;
+  List<String> get schemeNames => _schemes.keys.toList();
 
   String get defaultSchemeName => _schemes.entries
       .firstWhere((e) => !e.key.contains('disabled'))
@@ -161,7 +161,7 @@ class SchemeColorGenerator extends ColorGenerator {
 class StandardColorGenerator extends SchemeColorGenerator {
   /// ColorBrewer: https://github.com/axismaps/colorbrewer/
   /// Apache License 2.0: https://github.com/axismaps/colorbrewer/blob/master/LICENCE.txt
-  static const Map<String, List<String>> _standard_schemes = {
+  static const Map<String, List<String>> standardSchemes = {
     'disabled3': [
       'rgba(0,0,0, 0.20)',
       'rgba(0,0,0, 0.40)',
@@ -2093,10 +2093,10 @@ class StandardColorGenerator extends SchemeColorGenerator {
   };
 
   /// Constructs using default scheme 'brewer.Paired'.
-  StandardColorGenerator() : super(_standard_schemes, 'brewer.Paired');
+  StandardColorGenerator() : super(standardSchemes, 'brewer.Paired');
 
   StandardColorGenerator.scheme(String schemeName)
-      : super(_standard_schemes, schemeName);
+      : super(standardSchemes, schemeName);
 }
 
 /// Represents a Color in [red], [green], [blue] and [alpha] format.
@@ -2107,15 +2107,19 @@ class HTMLColor implements Comparable<HTMLColor> {
     return list.map((e) => HTMLColor.from(e)).whereType<HTMLColor>().toList();
   }
 
+  // ignore: non_constant_identifier_names
   static final RegExp COLOR_PATTERN_ARGS =
       RegExp(r'^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*(\d+(?:\.\d+)?)?\s*');
 
+  // ignore: non_constant_identifier_names
   static final RegExp COLOR_PATTERN_RGBA = RegExp(
       r'^(?:rgba?)?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*(\d+(?:\.\d+)?)?\s*\)');
 
+  // ignore: non_constant_identifier_names
   static final RegExp COLOR_PATTERN_HEX3 =
       RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f])$');
 
+  // ignore: non_constant_identifier_names
   static final RegExp COLOR_PATTERN_HEX6 =
       RegExp(r'^#?([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])$');
 
@@ -2210,6 +2214,15 @@ class HTMLColor implements Comparable<HTMLColor> {
 
     return null;
   }
+
+  /// Creates a copy of this instance, overwriting the passed parameters.
+  HTMLColor copyWith({int? red, int? green, int? blue, double? alpha}) =>
+      HTMLColor(
+        red ?? this.red,
+        green ?? this.green,
+        blue ?? this.blue,
+        alpha ?? this.alpha,
+      );
 
   /// Returns [true] if this color has [alpha] channel lower than 1.
   bool get hasAlpha => alpha != null && alpha != 1;

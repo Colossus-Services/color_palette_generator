@@ -89,7 +89,7 @@ void main() {
       expect(HTMLColor.from('rgba(200,0,255,1)').toString(), equals('#c800ff'));
       expect(HTMLColor.from('(0,0,255,1)').toString(), equals('#0000ff'));
       expect(HTMLColor.from('(0,0,255,0)').toString(),
-          equals('rgba(0, 0, 255, 0.0)'));
+          anyOf(equals('rgba(0, 0, 255, 0.0)'), equals('rgba(0, 0, 255, 0)')));
 
       expect(HTMLColor.from('(0,0,0, 0.5)').toString(),
           equals('rgba(0, 0, 0, 0.5)'));

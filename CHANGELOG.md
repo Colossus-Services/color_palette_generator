@@ -1,3 +1,12 @@
+## 2.0.1
+
+- Added `HTMLColor.copyWith`.
+- Minor fixes.
+- sdk: '>=2.17.0 <4.0.0'
+- swiss_knife: ^3.1.5
+- lints: ^2.0.1
+- test: ^1.21.4
+
 ## 2.0.0
 
 - Dart 2.12.0:

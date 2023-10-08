@@ -1,7 +1,7 @@
 # color_palette_generator
 
 [![pub package](https://img.shields.io/pub/v/color_palette_generator.svg?logo=dart&logoColor=00b9fc)](https://pub.dartlang.org/packages/color_palette_generator)
-[![CI](https://img.shields.io/github/workflow/status/Colossus-Services/color_palette_generator/Dart%20CI/master?logo=github-actions&logoColor=white)](https://github.com/Colossus-Services/color_palette_generator/actions)
+[![Dart CI](https://github.com/Colossus-Services/color_palette_generator/actions/workflows/dart.yml/badge.svg?branch=master)](https://github.com/Colossus-Services/color_palette_generator/actions/workflows/dart.yml)
 [![GitHub Tag](https://img.shields.io/github/v/tag/Colossus-Services/color_palette_generator?logo=git&logoColor=white)](https://github.com/Colossus-Services/color_palette_generator/releases)
 [![New Commits](https://img.shields.io/github/commits-since/Colossus-Services/color_palette_generator/latest?logo=git&logoColor=white)](https://github.com/Colossus-Services/color_palette_generator/network)
 [![Last Commits](https://img.shields.io/github/last-commit/Colossus-Services/color_palette_generator?logo=git&logoColor=white)](https://github.com/Colossus-Services/color_palette_generator/commits/master)
